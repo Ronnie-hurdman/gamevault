@@ -1,0 +1,46 @@
+{
+  "entities": {
+    "Game": {
+      "title": "Game",
+      "description": "A game in the user's library or search results",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string" },
+        "platform": { "type": "string", "enum": ["Sony", "Nintendo", "Steam"] },
+        "status": { "type": "string", "enum": ["owned", "wishlist"] },
+        "playedStatus": { "type": "string", "enum": ["played", "unplayed", "currently-playing"] },
+        "price": { "type": "string" },
+        "availability": { "type": "string" },
+        "imageUrl": { "type": "string" },
+        "rating": { "type": "number" },
+        "userId": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["title", "platform", "status", "userId"]
+    },
+    "Review": {
+      "title": "Review",
+      "description": "User review and rating for a game",
+      "type": "object",
+      "properties": {
+        "gameId": { "type": "string" },
+        "userId": { "type": "string" },
+        "userName": { "type": "string" },
+        "rating": { "type": "number" },
+        "comment": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["gameId", "userId", "rating"]
+    }
+  },
+  "firestore": {
+    "games": {
+      "schema": "Game",
+      "description": "Collection of games in the library or wishlist"
+    },
+    "reviews": {
+      "schema": "Review",
+      "description": "Collection of game reviews"
+    }
+  }
+}
