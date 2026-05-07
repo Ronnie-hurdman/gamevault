@@ -19,9 +19,9 @@ export default function GameCard({ game, onUpdate, onRemove, variant = 'library'
   };
 
   const statusColors = {
-    played: 'text-emerald-400',
-    unplayed: 'text-slate-400',
-    'currently-playing': 'text-indigo-400',
+    'Played': 'text-emerald-400',
+    'Unplayed': 'text-slate-400',
+    'Playing': 'text-indigo-400',
   };
 
   return (
@@ -69,9 +69,9 @@ export default function GameCard({ game, onUpdate, onRemove, variant = 'library'
                "text-[10px] font-bold uppercase tracking-wide",
                statusColors[game.playedStatus]
              )}>
-               {game.playedStatus.replace('-', ' ')}
+               {game.playedStatus}
              </span>
-             <span className="text-[10px] text-slate-400">{game.playedStatus === 'played' ? '48 hrs' : '--'}</span>
+             <span className="text-[10px] text-slate-400">{game.playedStatus === 'Played' ? '48 hrs' : '--'}</span>
           </div>
         )}
 

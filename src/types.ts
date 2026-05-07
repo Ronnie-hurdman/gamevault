@@ -5,7 +5,7 @@
 
 export type Platform = 'Sony' | 'Nintendo' | 'Steam';
 export type GameStatus = 'owned' | 'wishlist';
-export type PlayedStatus = 'played' | 'unplayed' | 'currently-playing';
+export type PlayedStatus = 'Played' | 'Unplayed' | 'Playing';
 
 export interface Game {
   id?: string;
