@@ -8,7 +8,22 @@ export function useGames() {
   useEffect(() => {
     const storedGames = localStorage.getItem('gv_games');
     const storedReviews = localStorage.getItem('gv_reviews');
-    if (storedGames) setGames(JSON.parse(storedGames));
+    if (storedGames) {
+      const parsedGames = JSON.parse(storedGames);
+      // Migrate old status values to new format
+      const migratedGames = parsedGames.map((game: Game) => {
+        const statusMap: Record<string, 'Played' | 'Unplayed' | 'Playing'> = {
+          'played': 'Played',
+          'unplayed': 'Unplayed',
+          'currently-playing': 'Playing'
+        };
+        return {
+          ...game,
+          playedStatus: statusMap[game.playedStatus] || game.playedStatus
+        };
+      });
+      setGames(migratedGames);
+    }
     if (storedReviews) setReviews(JSON.parse(storedReviews));
   }, []);
 

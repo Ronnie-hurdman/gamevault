@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Filter, Search as SearchIcon, SlidersHorizontal, LayoutGrid, List, Gamepad2 } from 'lucide-react';
+import { Search as SearchIcon, LayoutGrid, List, Gamepad2 } from 'lucide-react';
 import { useGames } from '../hooks/useGames';
 import GameCard from './GameCard';
 import { PlayedStatus, Platform } from '../types';
@@ -21,7 +21,7 @@ export default function LibraryView() {
   });
 
   const platforms: (Platform | 'All')[] = ['All', 'Sony', 'Nintendo', 'Steam'];
-  const playedStatuses: (PlayedStatus | 'All')[] = ['All', 'unplayed', 'currently-playing', 'played'];
+  const playedStatuses: (PlayedStatus | 'All')[] = ['All', 'Unplayed', 'Playing', 'Played'];
 
   return (
     <div className="space-y-8">
@@ -49,7 +49,7 @@ export default function LibraryView() {
 
       {/* Toolbar */}
       <div className="flex flex-col gap-6 p-6 rounded-2xl bg-slate-900 border border-slate-800 shadow-xl">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {/* Search */}
           <div className="relative group">
             <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-indigo-400 transition-colors" size={16} />
@@ -89,15 +89,12 @@ export default function LibraryView() {
                   playedFilter === s ? "bg-slate-800 text-white" : "text-slate-500 hover:text-slate-300"
                 )}
               >
-                {s === 'currently-playing' ? 'Live' : s}
+                {s}
               </button>
             ))}
           </div>
 
-          {/* Advanced */}
-          <button className="flex items-center justify-center gap-2 py-2 px-4 bg-slate-800 hover:bg-slate-700 rounded-lg border border-slate-700 text-xs font-bold transition-all text-slate-300">
-            <SlidersHorizontal size={14} /> Advanced Filter
-          </button>
+
         </div>
       </div>
 
