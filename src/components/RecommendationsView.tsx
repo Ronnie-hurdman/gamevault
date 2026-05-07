@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Sparkles, BrainCircuit, RefreshCw, Plus, ArrowRight, Dna } from 'lucide-react';
 import { useGames } from '../hooks/useGames';
-import { getGameRecommendations } from '../services/geminiService';
+import { GeminiConfigError, getGameRecommendations } from '../services/geminiService';
 import { Recommendation } from '../types';
 
 export default function RecommendationsView() {
@@ -10,15 +10,23 @@ export default function RecommendationsView() {
   const [loading, setLoading] = useState(false);
   const [recommendations, setRecommendations] = useState<Recommendation[]>([]);
   const [preference, setPreference] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
 
   const generateRecs = async () => {
     if (loading) return;
     setLoading(true);
+    setErrorMessage('');
     try {
       const recs = await getGameRecommendations(ownedGames, preference || "Modern RPGs and indies");
       setRecommendations(recs);
     } catch (e) {
-      console.error(e);
+      setRecommendations([]);
+      if (e instanceof GeminiConfigError) {
+        setErrorMessage(e.message);
+      } else {
+        setErrorMessage('Recommendation service is temporarily unavailable. Please try again shortly.');
+        console.error(e);
+      }
     } finally {
       setLoading(false);
     }
@@ -55,6 +63,11 @@ export default function RecommendationsView() {
             {loading ? "PROCESSING..." : "CALIBRATE"}
           </button>
         </div>
+        {errorMessage && (
+          <p className="mt-4 rounded-lg border border-amber-500/30 bg-amber-500/10 px-4 py-3 text-sm text-amber-200">
+            {errorMessage}
+          </p>
+        )}
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -85,7 +98,7 @@ export default function RecommendationsView() {
                     title: rec.title,
                     platform: rec.platform,
                     status: 'wishlist',
-                    playedStatus: 'unplayed',
+                    playedStatus: 'Unplayed',
                     price: rec.estimatedPrice,
                     userId: 'demo'
                   } as any);
