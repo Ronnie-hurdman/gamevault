@@ -1,7 +1,7 @@
-import React from 'react';
-import { motion } from 'motion/react';
-import { Star, Trash2, Gamepad2 } from 'lucide-react';
-import { Game } from '../types';
+import React, { useState, useRef, useEffect } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
+import { Star, Trash2, Gamepad2, Check, ChevronDown } from 'lucide-react';
+import { Game, PlayedStatus } from '../types';
 import { cn } from '../lib/utils';
 
 interface GameCardProps {
@@ -12,6 +12,9 @@ interface GameCardProps {
 }
 
 export default function GameCard({ game, onUpdate, onRemove, variant = 'library' }: GameCardProps) {
+  const [showStatusMenu, setShowStatusMenu] = useState(false);
+  const statusMenuRef = useRef<HTMLDivElement>(null);
+
   const platformIcons = {
     Sony: <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-indigo-600 text-white uppercase">PS5</span>,
     Nintendo: <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-red-500 text-white uppercase">Switch</span>,
@@ -24,15 +27,36 @@ export default function GameCard({ game, onUpdate, onRemove, variant = 'library'
     'Playing': 'text-indigo-400',
   };
 
+  const statusOptions: PlayedStatus[] = ['Unplayed', 'Playing', 'Played'];
+
+  const handleStatusChange = (newStatus: PlayedStatus) => {
+    onUpdate?.({ playedStatus: newStatus });
+    setShowStatusMenu(false);
+  };
+
+  // Close menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (statusMenuRef.current && !statusMenuRef.current.contains(event.target as Node)) {
+        setShowStatusMenu(false);
+      }
+    };
+
+    if (showStatusMenu) {
+      document.addEventListener('mousedown', handleClickOutside);
+      return () => document.removeEventListener('mousedown', handleClickOutside);
+    }
+  }, [showStatusMenu]);
+
   return (
     <motion.div
       layout
       initial={{ opacity: 0, scale: 0.95 }}
       animate={{ opacity: 1, scale: 1 }}
-      className="group relative bg-slate-900 border border-slate-800 rounded-xl overflow-hidden hover:border-slate-700 transition-all duration-300 shadow-xl"
+      className="group relative bg-slate-900 border border-slate-800 rounded-xl overflow-visible shadow-xl"
     >
       {/* Game Image */}
-      <div className="h-32 bg-slate-800 relative overflow-hidden">
+      <div className="h-32 bg-slate-800 relative overflow-hidden rounded-t-xl">
         {game.imageUrl ? (
           <img 
             src={game.imageUrl} 
@@ -60,18 +84,62 @@ export default function GameCard({ game, onUpdate, onRemove, variant = 'library'
       </div>
 
       {/* Content */}
-      <div className="p-3">
+      <div className="p-3 relative">
         <h3 className="text-sm font-semibold truncate text-white">{game.title}</h3>
         
         {variant === 'library' && (
-          <div className="flex items-center justify-between mt-2">
-             <span className={cn(
-               "text-[10px] font-bold uppercase tracking-wide",
-               statusColors[game.playedStatus]
-             )}>
-               {game.playedStatus}
-             </span>
+          <div className="flex items-center justify-between mt-2 relative" ref={statusMenuRef}>
+             <button 
+               onClick={() => setShowStatusMenu(!showStatusMenu)}
+               className={cn(
+                 "flex items-center gap-1 px-2 py-1 rounded transition-all cursor-pointer",
+                 showStatusMenu 
+                   ? "bg-slate-800/60 border border-slate-700" 
+                   : "hover:bg-slate-800/40 border border-transparent",
+                 statusColors[game.playedStatus]
+               )}
+               title="Click to change status"
+             >
+               <span className="text-[10px] font-bold uppercase tracking-wide">
+                 {game.playedStatus}
+               </span>
+               <ChevronDown 
+                 size={12} 
+                 className={cn(
+                   "transition-transform duration-200",
+                   showStatusMenu && "rotate-180"
+                 )}
+               />
+             </button>
              <span className="text-[10px] text-slate-400">{game.playedStatus === 'Played' ? '48 hrs' : '--'}</span>
+
+             {/* Status Change Menu */}
+             <AnimatePresence>
+               {showStatusMenu && (
+                 <motion.div
+                   initial={{ opacity: 0, scale: 0.95, y: -8 }}
+                   animate={{ opacity: 1, scale: 1, y: 0 }}
+                   exit={{ opacity: 0, scale: 0.95, y: -8 }}
+                   className="absolute left-0 top-full mt-2 bg-slate-800 border border-slate-700 rounded-lg shadow-2xl z-50 overflow-visible backdrop-blur-sm min-w-[140px]"
+                 >
+                   {statusOptions.map(status => (
+                     <button
+                       key={status}
+                       onClick={() => handleStatusChange(status)}
+                       className={cn(
+                         "w-full px-3 py-2 text-[10px] font-bold uppercase tracking-wide transition-colors flex items-center justify-between whitespace-nowrap",
+                         game.playedStatus === status 
+                           ? `${statusColors[status]} bg-slate-700/60` 
+                           : `text-slate-400 hover:bg-slate-700/40 hover:${statusColors[status]}`
+                       )}
+                     >
+                       <span>{status}</span>
+                       {game.playedStatus === status && <Check size={14} className="ml-2" />}
+                     </button>
+                   ))}
+                 </motion.div>
+               )}
+             </AnimatePresence>
           </div>
         )}
 
