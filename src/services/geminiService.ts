@@ -1,10 +1,25 @@
 import { GoogleGenAI } from "@google/genai";
 import { Game, Recommendation } from "../types";
 
+export class GeminiConfigError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = "GeminiConfigError";
+  }
+}
+
 function getGeminiApiKey(): string | undefined {
-  const processEnvKey = process.env.GEMINI_API_KEY;
-  const viteEnvKey = (import.meta as any).env?.VITE_GEMINI_API_KEY as string | undefined;
-  return processEnvKey || viteEnvKey;
+  const viteEnv = (import.meta as any).env;
+  const viteEnvKey = viteEnv?.VITE_GEMINI_API_KEY as string | undefined;
+  const processEnvKey = typeof process !== "undefined" ? process.env?.GEMINI_API_KEY : undefined;
+  const rawKey = viteEnvKey || processEnvKey;
+  const apiKey = rawKey?.trim();
+
+  if (!apiKey || apiKey === "your_gemini_api_key_here") {
+    return undefined;
+  }
+
+  return apiKey;
 }
 
 function getGeminiClient(): GoogleGenAI | null {
@@ -30,8 +45,7 @@ export async function getGameRecommendations(playedGames: Game[], preferences: s
 
   const genAI = getGeminiClient();
   if (!genAI) {
-    console.warn("Gemini API key not found. Set GEMINI_API_KEY or VITE_GEMINI_API_KEY.");
-    return [];
+    throw new GeminiConfigError("Gemini is not configured. Add a valid VITE_GEMINI_API_KEY in your local env file.");
   }
 
   try {
@@ -47,7 +61,16 @@ export async function getGameRecommendations(playedGames: Game[], preferences: s
     if (!text) return [];
     return JSON.parse(text);
   } catch (error) {
-    console.error("Gemini recommendation error:", error);
-    return [];
+    const message = error instanceof Error ? error.message : String(error);
+
+    if (message.includes("reported as leaked")) {
+      throw new GeminiConfigError("Your Gemini API key has been revoked because it was reported as leaked. Replace it with a new key in your local env file.");
+    }
+
+    if (message.includes("PERMISSION_DENIED") || message.includes('"code":403')) {
+      throw new GeminiConfigError("Gemini rejected the configured API key. Verify that VITE_GEMINI_API_KEY is valid and has access to the selected model.");
+    }
+
+    throw new Error("Unable to generate recommendations right now. Please try again in a moment.");
   }
 }

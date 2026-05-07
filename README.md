@@ -52,10 +52,10 @@ The app is built with React + TypeScript, styled with Tailwind CSS, backed by Fi
 
    Create a `.env.local` file in the project root:
    ```env
-   GEMINI_API_KEY=your_gemini_api_key_here
+   VITE_GEMINI_API_KEY=your_gemini_api_key_here
    ```
 
-   > A Gemini API key is required for the AI Recommendations feature. Get one at [Google AI Studio](https://aistudio.google.com/). Without it the recommendations view returns an empty list — the rest of the app works normally.
+   > A Gemini API key is required for the AI Recommendations feature. Get one at [Google AI Studio](https://aistudio.google.com/). If Google revokes a key because it was leaked, replace it locally and restart the dev server.
 
 4. **Firebase**
 

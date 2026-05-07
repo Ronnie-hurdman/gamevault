@@ -9,7 +9,7 @@ export default function Dashboard({ setActiveView }: { setActiveView: (v: any) =
 
   const stats = [
     { label: 'Total Games', value: ownedGames.length, icon: Library, color: 'text-blue-400' },
-    { label: 'Played', value: ownedGames.filter(g => g.playedStatus === 'played').length, icon: Trophy, color: 'text-emerald-400' },
+    { label: 'Played', value: ownedGames.filter(g => g.playedStatus === 'Played').length, icon: Trophy, color: 'text-emerald-400' },
     { label: 'Wishlist', value: wishlist.length, icon: Heart, color: 'text-indigo-400' },
   ];
 
