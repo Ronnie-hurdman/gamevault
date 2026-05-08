@@ -26,6 +26,7 @@ export interface Game {
   dateFinished?: string;
   completionPercentage?: number;
   hoursPlayed?: number;
+  notes?: string;
 }
 
 export interface Review {
