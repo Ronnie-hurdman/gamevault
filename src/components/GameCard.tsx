@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Star, Trash2, Gamepad2, Check, ChevronDown } from 'lucide-react';
+import { Star, Trash2, Gamepad2, Check, ChevronDown, Heart } from 'lucide-react';
 import { Game, PlayedStatus } from '../types';
 import { cn } from '../lib/utils';
 
@@ -53,7 +53,12 @@ export default function GameCard({ game, onUpdate, onRemove, variant = 'library'
       layout
       initial={{ opacity: 0, scale: 0.95 }}
       animate={{ opacity: 1, scale: 1 }}
-      className="group relative bg-slate-900 border border-slate-800 rounded-xl overflow-visible shadow-xl"
+      className={cn(
+        "group relative rounded-xl overflow-visible shadow-xl transition-colors",
+        variant === 'library' && game.isFavorite
+          ? "bg-slate-900 border border-rose-500/60 shadow-rose-950/40"
+          : "bg-slate-900 border border-slate-800"
+      )}
     >
       {/* Game Image */}
       <div className="h-32 bg-slate-800 relative overflow-hidden rounded-t-xl">
@@ -72,7 +77,13 @@ export default function GameCard({ game, onUpdate, onRemove, variant = 'library'
         )}
         
         {/* Overlay Badges */}
-        <div className="absolute top-2 right-2">
+        <div className="absolute top-2 right-2 flex items-center gap-2">
+           {variant === 'library' && game.isFavorite && (
+             <div className="flex items-center gap-1 rounded-full border border-rose-400/40 bg-rose-500/20 px-2 py-1 backdrop-blur-sm">
+               <Heart size={10} className="fill-rose-400 text-rose-400" />
+               <span className="text-[8px] font-bold uppercase tracking-[0.24em] text-rose-100">Favorite</span>
+             </div>
+           )}
            {platformIcons[game.platform]}
         </div>
 
@@ -85,7 +96,24 @@ export default function GameCard({ game, onUpdate, onRemove, variant = 'library'
 
       {/* Content */}
       <div className="p-3 relative">
-        <h3 className="text-sm font-semibold truncate text-white">{game.title}</h3>
+        <div className="flex items-start justify-between gap-2">
+          <h3 className="text-sm font-semibold truncate text-white">{game.title}</h3>
+          {variant === 'library' && (
+            <button
+              onClick={() => onUpdate?.({ isFavorite: !game.isFavorite })}
+              className={cn(
+                "mt-0.5 shrink-0 rounded-full border p-1.5 transition-colors",
+                game.isFavorite
+                  ? "border-rose-400/50 bg-rose-500/15 text-rose-300"
+                  : "border-slate-700 text-slate-500 hover:border-rose-400/40 hover:text-rose-300"
+              )}
+              title={game.isFavorite ? 'Remove from favorites' : 'Add to favorites'}
+              aria-label={game.isFavorite ? 'Remove from favorites' : 'Add to favorites'}
+            >
+              <Heart size={12} className={cn(game.isFavorite && 'fill-current')} />
+            </button>
+          )}
+        </div>
         
         {variant === 'library' && (
           <div className="flex items-center justify-between mt-2 relative" ref={statusMenuRef}>
