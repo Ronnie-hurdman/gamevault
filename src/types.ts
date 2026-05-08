@@ -13,6 +13,7 @@ export interface Game {
   platform: Platform;
   status: GameStatus;
   playedStatus: PlayedStatus;
+  isFavorite?: boolean;
   price?: string;
   availability?: string[];
   imageUrl?: string;

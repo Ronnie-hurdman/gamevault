@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Search as SearchIcon, LayoutGrid, List, Gamepad2, ArrowUpDown } from 'lucide-react';
+import { Search as SearchIcon, LayoutGrid, List, Gamepad2, ArrowUpDown, Heart } from 'lucide-react';
 import { useGames } from '../hooks/useGames';
 import GameCard from './GameCard';
 import { PlayedStatus, Platform } from '../types';
@@ -8,6 +8,7 @@ import { cn } from '../lib/utils';
 
 export default function LibraryView() {
   const { ownedGames, updateGame, removeGame } = useGames();
+  const favoriteCount = ownedGames.filter((game) => game.isFavorite).length;
   const [filter, setFilter] = useState<Platform | 'All'>('All');
   const [playedFilter, setPlayedFilter] = useState<PlayedStatus | 'All'>('All');
   const [search, setSearch] = useState('');
@@ -54,7 +55,13 @@ export default function LibraryView() {
       <header className="flex flex-col md:flex-row md:items-end justify-between gap-6">
         <div>
           <h2 className="text-3xl font-bold tracking-tight text-white uppercase italic tracking-tighter">Collection</h2>
-          <p className="text-slate-500 mt-2 text-[10px] font-bold uppercase tracking-[0.3em]">Operational Assets Index: {ownedGames.length}</p>
+          <div className="mt-2 flex flex-wrap items-center gap-3">
+            <p className="text-slate-500 text-[10px] font-bold uppercase tracking-[0.3em]">Operational Assets Index: {ownedGames.length}</p>
+            <div className="inline-flex items-center gap-1 rounded-full border border-rose-400/20 bg-rose-500/10 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.24em] text-rose-200">
+              <Heart size={10} className="fill-current" />
+              <span>Favorites: {favoriteCount}</span>
+            </div>
+          </div>
         </div>
         
         <div className="flex items-center gap-2">

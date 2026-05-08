@@ -40,6 +40,7 @@ export function useGames() {
   const addGame = (game: Omit<Game, 'id' | 'createdAt'>) => {
     const newGame: Game = {
       ...game,
+      isFavorite: game.isFavorite ?? false,
       id: Math.random().toString(36).substring(7),
       createdAt: new Date().toISOString(),
     };
