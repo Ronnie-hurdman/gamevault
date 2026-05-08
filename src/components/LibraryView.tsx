@@ -13,7 +13,7 @@ export default function LibraryView() {
   const [playedFilter, setPlayedFilter] = useState<PlayedStatus | 'All'>('All');
   const [search, setSearch] = useState('');
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
-  const [sortBy, setSortBy] = useState<'title' | 'platform' | 'createdAt' | 'playedStatus'>('createdAt');
+  const [sortBy, setSortBy] = useState<'title' | 'platform' | 'createdAt' | 'playedStatus' | 'completionPercentage'>('createdAt');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
 
   const filteredGames = ownedGames.filter(g => {
@@ -38,6 +38,8 @@ export default function LibraryView() {
       comparison = a.platform.localeCompare(b.platform);
     } else if (sortBy === 'playedStatus') {
       comparison = statusOrder[a.playedStatus] - statusOrder[b.playedStatus];
+    } else if (sortBy === 'completionPercentage') {
+      comparison = (a.completionPercentage || 0) - (b.completionPercentage || 0);
     } else {
       const aTime = new Date(a.createdAt).getTime();
       const bTime = new Date(b.createdAt).getTime();
@@ -70,13 +72,14 @@ export default function LibraryView() {
               <ArrowUpDown className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" size={14} />
               <select
                 value={sortBy}
-                onChange={(e) => setSortBy(e.target.value as 'title' | 'platform' | 'createdAt' | 'playedStatus')}
+                onChange={(e) => setSortBy(e.target.value as 'title' | 'platform' | 'createdAt' | 'playedStatus' | 'completionPercentage')}
                 className="w-full bg-slate-900 border border-slate-800 rounded py-2 pl-8 pr-2 text-[10px] font-bold uppercase tracking-wider text-slate-200 outline-none focus:ring-1 focus:ring-indigo-500/50"
               >
                 <option value="title">Title</option>
                 <option value="platform">Platform</option>
                 <option value="createdAt">Date Added</option>
                 <option value="playedStatus">Status</option>
+                <option value="completionPercentage">Progress</option>
               </select>
             </div>
             <button

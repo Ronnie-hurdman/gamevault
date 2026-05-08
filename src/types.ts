@@ -21,6 +21,11 @@ export interface Game {
   description?: string;
   userId: string;
   createdAt: any;
+  // Progress tracking fields
+  dateStarted?: string;
+  dateFinished?: string;
+  completionPercentage?: number;
+  hoursPlayed?: number;
 }
 
 export interface Review {

@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Star, Trash2, Gamepad2, Check, ChevronDown, Heart } from 'lucide-react';
+import { Star, Trash2, Gamepad2, Check, ChevronDown, Heart, Clock, BarChart3, X } from 'lucide-react';
 import { Game, PlayedStatus } from '../types';
 import { cn } from '../lib/utils';
 
@@ -13,7 +13,16 @@ interface GameCardProps {
 
 export default function GameCard({ game, onUpdate, onRemove, variant = 'library' }: GameCardProps) {
   const [showStatusMenu, setShowStatusMenu] = useState(false);
+  const [showProgressModal, setShowProgressModal] = useState(false);
   const statusMenuRef = useRef<HTMLDivElement>(null);
+  const progressModalRef = useRef<HTMLDivElement>(null);
+
+  const [progressForm, setProgressForm] = useState({
+    dateStarted: game.dateStarted || '',
+    dateFinished: game.dateFinished || '',
+    completionPercentage: game.completionPercentage || 0,
+    hoursPlayed: game.hoursPlayed || 0,
+  });
 
   const platformIcons = {
     Sony: <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-indigo-600 text-white uppercase">PS5</span>,
@@ -34,19 +43,27 @@ export default function GameCard({ game, onUpdate, onRemove, variant = 'library'
     setShowStatusMenu(false);
   };
 
+  const handleSaveProgress = () => {
+    onUpdate?.(progressForm);
+    setShowProgressModal(false);
+  };
+
   // Close menu when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (statusMenuRef.current && !statusMenuRef.current.contains(event.target as Node)) {
         setShowStatusMenu(false);
       }
+      if (progressModalRef.current && !progressModalRef.current.contains(event.target as Node)) {
+        setShowProgressModal(false);
+      }
     };
 
-    if (showStatusMenu) {
+    if (showStatusMenu || showProgressModal) {
       document.addEventListener('mousedown', handleClickOutside);
       return () => document.removeEventListener('mousedown', handleClickOutside);
     }
-  }, [showStatusMenu]);
+  }, [showStatusMenu, showProgressModal]);
 
   return (
     <motion.div
@@ -139,7 +156,14 @@ export default function GameCard({ game, onUpdate, onRemove, variant = 'library'
                  )}
                />
              </button>
-             <span className="text-[10px] text-slate-400">{game.playedStatus === 'Played' ? '48 hrs' : '--'}</span>
+             <button
+               onClick={() => setShowProgressModal(true)}
+               className="text-[10px] text-slate-400 hover:text-indigo-400 transition-colors flex items-center gap-1 px-2 py-1 rounded hover:bg-slate-800/40"
+               title="Edit progress"
+             >
+               <Clock size={12} />
+               {game.hoursPlayed ? `${game.hoursPlayed}h` : '--'}
+             </button>
 
              {/* Status Change Menu */}
              <AnimatePresence>
@@ -168,6 +192,95 @@ export default function GameCard({ game, onUpdate, onRemove, variant = 'library'
                  </motion.div>
                )}
              </AnimatePresence>
+
+             {/* Progress Edit Modal */}
+             <AnimatePresence>
+               {showProgressModal && (
+                 <motion.div
+                   ref={progressModalRef}
+                   initial={{ opacity: 0, scale: 0.95, y: -8 }}
+                   animate={{ opacity: 1, scale: 1, y: 0 }}
+                   exit={{ opacity: 0, scale: 0.95, y: -8 }}
+                   className="absolute right-0 top-full mt-2 bg-slate-800 border border-slate-700 rounded-lg shadow-2xl z-50 p-4 backdrop-blur-sm w-64"
+                 >
+                   <div className="flex items-center justify-between mb-3">
+                     <h4 className="text-[10px] font-bold uppercase tracking-widest text-white">Gameplay Progress</h4>
+                     <button
+                       onClick={() => setShowProgressModal(false)}
+                       className="text-slate-500 hover:text-white transition-colors"
+                     >
+                       <X size={14} />
+                     </button>
+                   </div>
+
+                   <div className="space-y-3">
+                     {/* Completion Percentage */}
+                     <div>
+                       <label className="block text-[9px] font-bold uppercase tracking-wide text-slate-300 mb-1">
+                         Completion: {progressForm.completionPercentage}%
+                       </label>
+                       <input
+                         type="range"
+                         min="0"
+                         max="100"
+                         value={progressForm.completionPercentage}
+                         onChange={(e) => setProgressForm({ ...progressForm, completionPercentage: Number(e.target.value) })}
+                         className="w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-indigo-500"
+                       />
+                     </div>
+
+                     {/* Hours Played */}
+                     <div>
+                       <label className="block text-[9px] font-bold uppercase tracking-wide text-slate-300 mb-1">
+                         Hours Played
+                       </label>
+                       <input
+                         type="number"
+                         min="0"
+                         step="0.5"
+                         value={progressForm.hoursPlayed}
+                         onChange={(e) => setProgressForm({ ...progressForm, hoursPlayed: Number(e.target.value) })}
+                         className="w-full bg-slate-900 border border-slate-700 rounded px-2 py-1 text-[10px] text-white outline-none focus:ring-1 focus:ring-indigo-500/50"
+                       />
+                     </div>
+
+                     {/* Date Started */}
+                     <div>
+                       <label className="block text-[9px] font-bold uppercase tracking-wide text-slate-300 mb-1">
+                         Date Started
+                       </label>
+                       <input
+                         type="date"
+                         value={progressForm.dateStarted}
+                         onChange={(e) => setProgressForm({ ...progressForm, dateStarted: e.target.value })}
+                         className="w-full bg-slate-900 border border-slate-700 rounded px-2 py-1 text-[10px] text-white outline-none focus:ring-1 focus:ring-indigo-500/50"
+                       />
+                     </div>
+
+                     {/* Date Finished */}
+                     <div>
+                       <label className="block text-[9px] font-bold uppercase tracking-wide text-slate-300 mb-1">
+                         Date Finished
+                       </label>
+                       <input
+                         type="date"
+                         value={progressForm.dateFinished}
+                         onChange={(e) => setProgressForm({ ...progressForm, dateFinished: e.target.value })}
+                         className="w-full bg-slate-900 border border-slate-700 rounded px-2 py-1 text-[10px] text-white outline-none focus:ring-1 focus:ring-indigo-500/50"
+                       />
+                     </div>
+
+                     {/* Save Button */}
+                     <button
+                       onClick={handleSaveProgress}
+                       className="w-full mt-3 bg-indigo-600 hover:bg-indigo-700 text-white text-[10px] font-bold uppercase tracking-widest py-2 rounded transition-colors"
+                     >
+                       Save Progress
+                     </button>
+                   </div>
+                 </motion.div>
+               )}
+             </AnimatePresence>
           </div>
         )}
 
@@ -175,6 +288,38 @@ export default function GameCard({ game, onUpdate, onRemove, variant = 'library'
            <div className="mt-2">
              <p className="text-[10px] text-slate-400 line-clamp-1">{game.description || 'Highly rated RPG adventure...'}</p>
            </div>
+        )}
+
+        {/* Progress Display */}
+        {variant === 'library' && (game.completionPercentage !== undefined && game.completionPercentage > 0 || game.hoursPlayed !== undefined && game.hoursPlayed > 0) && (
+          <div className="mt-3 space-y-2">
+            {game.completionPercentage !== undefined && game.completionPercentage > 0 && (
+              <div>
+                <div className="flex items-center justify-between mb-1">
+                  <span className="text-[9px] font-bold uppercase tracking-wide text-slate-400">Progress</span>
+                  <span className="text-[9px] font-bold text-indigo-400">{game.completionPercentage}%</span>
+                </div>
+                <div className="w-full h-1.5 bg-slate-700 rounded-full overflow-hidden">
+                  <div 
+                    className="h-full bg-gradient-to-r from-indigo-500 to-indigo-400 transition-all duration-300"
+                    style={{ width: `${game.completionPercentage}%` }}
+                  />
+                </div>
+              </div>
+            )}
+            {game.hoursPlayed !== undefined && game.hoursPlayed > 0 && (
+              <div className="flex items-center justify-between text-[9px]">
+                <span className="text-slate-400 font-bold uppercase tracking-wide">Time</span>
+                <span className="text-indigo-300 font-semibold">{game.hoursPlayed} hours</span>
+              </div>
+            )}
+            {game.dateStarted && (
+              <div className="flex items-center justify-between text-[9px]">
+                <span className="text-slate-400 font-bold uppercase tracking-wide">Started</span>
+                <span className="text-slate-400">{new Date(game.dateStarted).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</span>
+              </div>
+            )}
+          </div>
         )}
 
         {/* Ratings */}
