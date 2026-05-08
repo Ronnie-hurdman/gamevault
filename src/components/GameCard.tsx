@@ -1,8 +1,9 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Star, Trash2, Gamepad2, Check, ChevronDown, Heart, Clock, BarChart3, X } from 'lucide-react';
+import { Star, Trash2, Gamepad2, Check, ChevronDown, Heart, Clock, BarChart3, X, Pencil } from 'lucide-react';
 import { Game, PlayedStatus } from '../types';
 import { cn } from '../lib/utils';
+import EditGameModal from './EditGameModal';
 
 interface GameCardProps {
   game: Game;
@@ -14,6 +15,7 @@ interface GameCardProps {
 export default function GameCard({ game, onUpdate, onRemove, variant = 'library' }: GameCardProps) {
   const [showStatusMenu, setShowStatusMenu] = useState(false);
   const [showProgressModal, setShowProgressModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
   const statusMenuRef = useRef<HTMLDivElement>(null);
   const progressModalRef = useRef<HTMLDivElement>(null);
 
@@ -290,6 +292,11 @@ export default function GameCard({ game, onUpdate, onRemove, variant = 'library'
            </div>
         )}
 
+        {/* Notes Display */}
+        {variant === 'library' && game.notes && (
+          <p className="mt-2 text-[9px] text-slate-500 italic leading-relaxed line-clamp-2">{game.notes}</p>
+        )}
+
         {/* Progress Display */}
         {variant === 'library' && (game.completionPercentage !== undefined && game.completionPercentage > 0 || game.hoursPlayed !== undefined && game.hoursPlayed > 0) && (
           <div className="mt-3 space-y-2">
@@ -332,6 +339,7 @@ export default function GameCard({ game, onUpdate, onRemove, variant = 'library'
           <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
              {variant === 'library' ? (
                 <>
+                  <button onClick={() => setShowEditModal(true)} className="p-1 text-slate-500 hover:text-indigo-400 transition-colors" title="Edit game details"><Pencil size={12} /></button>
                   <button onClick={() => onUpdate?.({ rating: ((game.rating || 0) % 5) + 1 })} className="p-1 text-slate-500 hover:text-white transition-colors"><Star size={12} /></button>
                   <button onClick={onRemove} className="p-1 text-slate-500 hover:text-rose-400 transition-colors"><Trash2 size={12} /></button>
                 </>
@@ -346,6 +354,16 @@ export default function GameCard({ game, onUpdate, onRemove, variant = 'library'
           </div>
         </div>
       </div>
+
+      {/* Edit Game Modal */}
+      {variant === 'library' && (
+        <EditGameModal
+          game={game}
+          isOpen={showEditModal}
+          onClose={() => setShowEditModal(false)}
+          onSave={(updates) => onUpdate?.(updates)}
+        />
+      )}
     </motion.div>
   );
 }

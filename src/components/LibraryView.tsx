@@ -9,6 +9,7 @@ import { cn } from '../lib/utils';
 export default function LibraryView() {
   const { ownedGames, updateGame, removeGame } = useGames();
   const favoriteCount = ownedGames.filter((game) => game.isFavorite).length;
+  const [favoritesOnly, setFavoritesOnly] = useState(false);
   const [filter, setFilter] = useState<Platform | 'All'>('All');
   const [playedFilter, setPlayedFilter] = useState<PlayedStatus | 'All'>('All');
   const [search, setSearch] = useState('');
@@ -20,7 +21,8 @@ export default function LibraryView() {
     const matchesPlatform = filter === 'All' || g.platform === filter;
     const matchesPlayed = playedFilter === 'All' || g.playedStatus === playedFilter;
     const matchesSearch = g.title.toLowerCase().includes(search.toLowerCase());
-    return matchesPlatform && matchesPlayed && matchesSearch;
+    const matchesFavorites = !favoritesOnly || !!g.isFavorite;
+    return matchesPlatform && matchesPlayed && matchesSearch && matchesFavorites;
   });
 
   const statusOrder: Record<PlayedStatus, number> = {
@@ -59,10 +61,21 @@ export default function LibraryView() {
           <h2 className="text-3xl font-bold tracking-tight text-white uppercase italic tracking-tighter">Collection</h2>
           <div className="mt-2 flex flex-wrap items-center gap-3">
             <p className="text-slate-500 text-[10px] font-bold uppercase tracking-[0.3em]">Operational Assets Index: {ownedGames.length}</p>
-            <div className="inline-flex items-center gap-1 rounded-full border border-rose-400/20 bg-rose-500/10 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.24em] text-rose-200">
+            <button
+              type="button"
+              onClick={() => setFavoritesOnly((prev) => !prev)}
+              className={cn(
+                "inline-flex items-center gap-1 rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-[0.24em] transition-colors",
+                favoritesOnly
+                  ? "border border-rose-300/60 bg-rose-500/20 text-rose-100"
+                  : "border border-rose-400/20 bg-rose-500/10 text-rose-200 hover:border-rose-300/40 hover:bg-rose-500/15"
+              )}
+              title={favoritesOnly ? 'Show all library games' : 'Show only favorite games'}
+              aria-pressed={favoritesOnly}
+            >
               <Heart size={10} className="fill-current" />
-              <span>Favorites: {favoriteCount}</span>
-            </div>
+              <span>{favoritesOnly ? 'Favorites Only' : 'Favorites'}: {favoriteCount}</span>
+            </button>
           </div>
         </div>
         
