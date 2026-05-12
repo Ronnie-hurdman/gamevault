@@ -56,19 +56,19 @@ export default function LibraryView() {
 
   return (
     <div className="space-y-8">
-      <header className="flex flex-col md:flex-row md:items-end justify-between gap-6">
+      <header className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b-4 border-cyan-400 pb-6 pixel-shadow">
         <div>
-          <h2 className="text-3xl font-bold tracking-tight text-white uppercase italic tracking-tighter">Collection</h2>
+          <h2 className="text-3xl pixel-heading text-white uppercase tracking-tighter drop-shadow-[0_0_8px_#00ffea]">Collection</h2>
           <div className="mt-2 flex flex-wrap items-center gap-3">
-            <p className="text-slate-500 text-[10px] font-bold uppercase tracking-[0.3em]">Operational Assets Index: {ownedGames.length}</p>
+            <p className="text-pink-400 text-[10px] pixel-heading font-bold uppercase tracking-[0.3em]">Assets: {ownedGames.length}</p>
             <button
               type="button"
               onClick={() => setFavoritesOnly((prev) => !prev)}
               className={cn(
-                "inline-flex items-center gap-1 rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-[0.24em] transition-colors",
+                "inline-flex items-center gap-1 rounded-full px-3 py-1 text-[10px] pixel-heading font-bold uppercase tracking-[0.24em] transition-colors border-2 border-cyan-400",
                 favoritesOnly
-                  ? "border border-rose-300/60 bg-rose-500/20 text-rose-100"
-                  : "border border-rose-400/20 bg-rose-500/10 text-rose-200 hover:border-rose-300/40 hover:bg-rose-500/15"
+                  ? "bg-pink-600/30 text-white pixel-shadow"
+                  : "bg-black text-cyan-300 hover:bg-pink-900/30 hover:text-white"
               )}
               title={favoritesOnly ? 'Show all library games' : 'Show only favorite games'}
               aria-pressed={favoritesOnly}
@@ -122,29 +122,29 @@ export default function LibraryView() {
       </header>
 
       {/* Toolbar */}
-      <div className="flex flex-col gap-6 p-6 rounded-2xl bg-slate-900 border border-slate-800 shadow-xl">
+      <div className="flex flex-col gap-6 p-6 rounded-lg glass-card pixel-shadow border-4 border-pink-500">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {/* Search */}
           <div className="relative group">
-            <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-indigo-400 transition-colors" size={16} />
+            <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 text-cyan-300 group-focus-within:text-pink-400 transition-colors" size={16} />
             <input 
               type="text"
               placeholder="Query database..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full bg-slate-950/40 border border-slate-800 rounded-lg py-2 pl-9 pr-4 text-xs font-medium outline-none focus:ring-1 focus:ring-indigo-500/50 transition-all placeholder:text-slate-700"
+              className="w-full bg-black border-2 border-cyan-400 rounded-lg py-2 pl-9 pr-4 text-xs pixel-heading outline-none focus:ring-2 focus:ring-pink-500 transition-all placeholder:text-pink-400 text-cyan-300"
             />
           </div>
 
           {/* Platform Filter */}
-          <div className="flex items-center gap-1 bg-slate-950/40 p-1 rounded-lg border border-slate-800">
+          <div className="flex items-center gap-1 bg-black p-1 rounded-lg border-2 border-cyan-400">
             {platforms.map(p => (
               <button
                 key={p}
                 onClick={() => setFilter(p)}
                 className={cn(
-                  "flex-1 py-1 px-3 rounded text-[10px] font-bold transition-all uppercase tracking-wider",
-                  filter === p ? "bg-slate-800 text-white" : "text-slate-500 hover:text-slate-300"
+                  "flex-1 py-1 px-3 rounded text-[10px] pixel-heading font-bold transition-all uppercase tracking-wider border-2 border-pink-500",
+                  filter === p ? "bg-pink-600 text-white pixel-shadow" : "text-cyan-300 hover:bg-pink-900/30 hover:text-white"
                 )}
               >
                 {p}
@@ -153,7 +153,7 @@ export default function LibraryView() {
           </div>
 
           {/* Status Filter */}
-          <div className="flex items-center gap-1 bg-slate-950/40 p-1 rounded-lg border border-slate-800">
+          <div className="flex items-center gap-1 bg-black p-1 rounded-lg border-2 border-cyan-400">
             {playedStatuses.map(s => (
               <button
                 key={s}

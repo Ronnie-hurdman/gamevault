@@ -36,12 +36,12 @@ export default function Walkthrough() {
 
   return (
     <div className="max-w-4xl mx-auto space-y-12">
-      <header className="text-center border-b border-slate-800 pb-8">
-        <h2 className="text-3xl font-bold tracking-tight text-white uppercase italic tracking-tighter mb-2">Systems Briefing</h2>
-        <p className="text-slate-500 text-sm font-medium">Master the GameVault operational interface.</p>
+      <header className="text-center border-b-4 border-cyan-400 pb-8 pixel-shadow">
+        <h2 className="text-3xl pixel-heading text-white uppercase tracking-tighter drop-shadow-[0_0_8px_#00ffea] mb-2">Systems Briefing</h2>
+        <p className="text-pink-400 text-xs pixel-heading">Master the GameVault operational interface.</p>
       </header>
 
-      <div className="relative aspect-video bg-black rounded-xl border border-slate-700 overflow-hidden shadow-2xl flex items-center justify-center group">
+      <div className="relative aspect-video bg-black rounded-lg border-4 border-pink-500 overflow-hidden pixel-shadow flex items-center justify-center group">
         {/* Simulated Video Player */}
         <AnimatePresence mode="wait">
           <motion.div 
@@ -49,36 +49,36 @@ export default function Walkthrough() {
             initial={{ opacity: 0, scale: 1.05 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.95 }}
-            className="absolute inset-0 p-12 flex flex-col items-center justify-center text-center bg-slate-950/40 backdrop-blur-sm"
+            className="absolute inset-0 p-12 flex flex-col items-center justify-center text-center bg-black/80 pixel-shadow"
           >
-             <div className={`p-4 rounded-xl bg-slate-900 border border-slate-800 text-indigo-400 mb-6 shadow-xl`}>
+             <div className={`p-4 rounded-lg bg-pink-600 border-2 border-cyan-400 text-white mb-6 pixel-shadow`}>
                <step.icon size={48} />
              </div>
-             <h3 className="text-2xl font-bold text-white mb-3 uppercase italic tracking-tight">{step.title}</h3>
-             <p className="text-slate-400 text-base max-w-sm leading-relaxed">{step.desc}</p>
+             <h3 className="text-2xl pixel-heading font-bold text-white mb-3 uppercase tracking-tight drop-shadow-[0_0_8px_#00ffea]">{step.title}</h3>
+             <p className="text-cyan-300 text-base pixel-heading max-w-sm leading-relaxed">{step.desc}</p>
           </motion.div>
         </AnimatePresence>
 
         {/* Video UI Overlay */}
-        <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity">
-           <div className="w-16 h-16 rounded-full bg-white/10 backdrop-blur-md flex items-center justify-center border border-white/20">
+          <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity">
+            <div className="w-16 h-16 rounded-full bg-pink-600/30 pixel-shadow flex items-center justify-center border-2 border-cyan-400">
               <Play fill="white" size={24} className="ml-1" />
-           </div>
-        </div>
+            </div>
+          </div>
 
         {/* Progress Dots */}
         <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-1.5">
           {STEPS.map((_, i) => (
             <div 
               key={i} 
-              className={`h-1 rounded-full transition-all duration-500 ${i === currentStep ? 'w-6 bg-indigo-500' : 'w-1 bg-white/10'}`} 
+              className={`h-1 rounded-full transition-all duration-500 ${i === currentStep ? 'w-6 bg-pink-500' : 'w-1 bg-cyan-400/20'}`} 
             />
           ))}
         </div>
 
         <div className="absolute top-4 left-4 flex items-center gap-2">
-          <div className="w-1.5 h-1.5 rounded-full bg-rose-600 animate-pulse" />
-          <span className="text-[9px] font-black text-slate-500 uppercase tracking-widest">SECURE STREAM // V-0.8</span>
+          <div className="w-1.5 h-1.5 rounded-full bg-pink-500 animate-pulse pixel-shadow" />
+          <span className="text-[9px] pixel-heading font-black text-cyan-300 uppercase tracking-widest">SECURE STREAM // V-0.8</span>
         </div>
       </div>
 
@@ -86,7 +86,7 @@ export default function Walkthrough() {
         <button 
           onClick={() => setCurrentStep(prev => Math.max(0, prev - 1))}
           disabled={currentStep === 0}
-          className="flex items-center gap-2 px-4 py-2 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 text-sm font-bold transition-all disabled:opacity-0"
+          className="flex items-center gap-2 px-4 py-2 rounded-lg arcade-btn text-xs font-bold disabled:opacity-0"
         >
           <ChevronLeft size={16} /> Back
         </button>
@@ -95,14 +95,14 @@ export default function Walkthrough() {
            {currentStep === STEPS.length - 1 ? (
              <button 
               onClick={() => alert("System Initialized.")}
-              className="px-8 py-2.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-bold transition-all shadow-xl shadow-indigo-600/20"
+              className="px-8 py-2.5 rounded-lg arcade-btn text-xs font-bold"
              >
                Launch Vault
              </button>
            ) : (
             <button 
               onClick={() => setCurrentStep(prev => Math.min(STEPS.length - 1, prev + 1))}
-              className="flex items-center gap-2 px-8 py-2.5 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-white text-sm font-bold transition-all"
+              className="flex items-center gap-2 px-8 py-2.5 rounded-lg arcade-btn text-xs font-bold"
             >
               Continue <ChevronRight size={16} />
             </button>
@@ -111,17 +111,17 @@ export default function Walkthrough() {
       </div>
 
       <section className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-6">
-        <div className="p-6 rounded-xl bg-slate-900 border border-slate-800 shadow-xl">
-          <h4 className="text-sm font-bold text-white mb-4 uppercase tracking-widest">Technical Specifications</h4>
-          <ul className="space-y-3 text-slate-500 text-xs font-medium">
-            <li className="flex items-center gap-3"><div className="w-1 h-1 rounded-full bg-indigo-500" /> Neural engine powered by Gemini 2.0</li>
-            <li className="flex items-center gap-3"><div className="w-1 h-1 rounded-full bg-indigo-500" /> Distributed platform sync protocol</li>
-            <li className="flex items-center gap-3"><div className="w-1 h-1 rounded-full bg-indigo-500" /> Real-time pricing index monitoring</li>
+        <div className="p-6 rounded-lg glass-card pixel-shadow border-4 border-cyan-400">
+          <h4 className="text-sm pixel-heading font-bold text-white mb-4 uppercase tracking-widest">Technical Specifications</h4>
+          <ul className="space-y-3 text-cyan-300 text-xs pixel-heading font-medium">
+            <li className="flex items-center gap-3"><div className="w-1 h-1 rounded-full bg-pink-500" /> Neural engine powered by Gemini 2.0</li>
+            <li className="flex items-center gap-3"><div className="w-1 h-1 rounded-full bg-pink-500" /> Distributed platform sync protocol</li>
+            <li className="flex items-center gap-3"><div className="w-1 h-1 rounded-full bg-pink-500" /> Real-time pricing index monitoring</li>
           </ul>
         </div>
-        <div className="p-6 rounded-xl bg-indigo-600/5 border border-indigo-500/10 shadow-xl">
-          <h4 className="text-sm font-bold text-white mb-3 italic">Operational Note</h4>
-          <p className="text-slate-500 text-xs leading-relaxed italic">
+        <div className="p-6 rounded-lg glass-card pixel-shadow border-4 border-pink-500">
+          <h4 className="text-sm pixel-heading font-bold text-white mb-3">Operational Note</h4>
+          <p className="text-pink-400 text-xs pixel-heading leading-relaxed">
             Toggle between standard and grid views to optimize library navigation. Use the 'Detection Protocol' for accurate asset acquisition projections.
           </p>
         </div>

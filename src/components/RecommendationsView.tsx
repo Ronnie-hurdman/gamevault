@@ -34,37 +34,37 @@ export default function RecommendationsView() {
 
   return (
     <div className="space-y-10">
-      <header className="max-w-3xl border-b border-slate-800 pb-8">
+      <header className="max-w-3xl border-b-4 border-pink-500 pb-8 pixel-shadow">
         <div className="flex items-center gap-3 mb-4">
-          <div className="p-2.5 rounded-lg bg-indigo-600/10 text-indigo-400">
+          <div className="p-2.5 rounded bg-pink-600 border-2 border-cyan-400 text-white pixel-shadow">
             <BrainCircuit size={28} />
           </div>
-          <h2 className="text-3xl font-bold tracking-tight text-white uppercase italic tracking-tighter">Neural Engine</h2>
+          <h2 className="text-3xl pixel-heading text-white uppercase tracking-tighter drop-shadow-[0_0_8px_#00ffea]">Neural Engine</h2>
         </div>
-        <p className="text-slate-400 text-base leading-relaxed">Gemini AI analyzes your played history and preference variables to identify synergistic gaming experiences.</p>
+        <p className="text-cyan-300 text-base pixel-heading leading-relaxed">Gemini AI analyzes your played history and preference variables to identify synergistic gaming experiences.</p>
       </header>
 
-      <div className="p-6 rounded-xl bg-slate-900 border border-slate-800 shadow-xl">
-        <label className="block text-[10px] font-black text-slate-500 uppercase tracking-[0.3em] mb-4">Input Preference Variables</label>
+      <div className="p-6 rounded-lg glass-card pixel-shadow border-4 border-cyan-400">
+        <label className="block text-[10px] pixel-heading text-pink-400 uppercase tracking-[0.3em] mb-4">Input Preference Variables</label>
         <div className="flex flex-col md:flex-row gap-3">
           <input 
             type="text" 
             placeholder="e.g. 'Atmospheric narratives', 'Couch co-op', 'Tactical depth'..."
             value={preference}
             onChange={(e) => setPreference(e.target.value)}
-            className="flex-1 bg-slate-950/40 border border-slate-800 rounded-lg px-5 py-3 text-sm outline-none focus:ring-1 focus:ring-indigo-500 transition-all font-medium placeholder:text-slate-700"
+            className="flex-1 bg-black border-2 border-cyan-400 rounded-lg px-5 py-3 text-sm pixel-heading outline-none focus:ring-2 focus:ring-pink-500 transition-all font-medium placeholder:text-pink-400 text-cyan-300"
           />
           <button 
             onClick={generateRecs}
             disabled={loading}
-            className="bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 text-white px-8 py-3 rounded-lg text-xs font-bold transition-all shadow-xl shadow-indigo-600/20 flex items-center justify-center gap-2 whitespace-nowrap"
+            className="arcade-btn disabled:opacity-50 text-xs font-bold flex items-center justify-center gap-2 whitespace-nowrap"
           >
             {loading ? <RefreshCw className="animate-spin" size={16} /> : <Dna size={16} />}
             {loading ? "PROCESSING..." : "CALIBRATE"}
           </button>
         </div>
         {errorMessage && (
-          <p className="mt-4 rounded-lg border border-amber-500/30 bg-amber-500/10 px-4 py-3 text-sm text-amber-200">
+          <p className="mt-4 rounded-lg border-2 border-pink-500 bg-black/80 px-4 py-3 text-sm text-pink-400 pixel-heading">
             {errorMessage}
           </p>
         )}
@@ -78,19 +78,19 @@ export default function RecommendationsView() {
               initial={{ opacity: 0, scale: 0.98 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: i * 0.1 }}
-              className="p-6 rounded-xl bg-slate-900 border border-slate-800 shadow-xl relative group overflow-hidden"
+              className="p-6 rounded-lg glass-card pixel-shadow border-4 border-pink-500 relative group overflow-hidden"
             >
               <div className="flex justify-between items-start mb-4">
                 <div>
-                   <span className="px-2 py-0.5 rounded bg-slate-800 text-slate-400 text-[9px] font-black uppercase tracking-widest border border-slate-700 mb-2 inline-block">
+                   <span className="px-2 py-0.5 rounded bg-black border-2 border-cyan-400 text-pink-400 text-[9px] pixel-heading font-black uppercase tracking-widest mb-2 inline-block">
                     {rec.platform}
                   </span>
-                  <h3 className="text-lg font-bold text-white">{rec.title}</h3>
+                  <h3 className="text-lg pixel-heading font-bold text-white drop-shadow-[0_0_8px_#00ffea]">{rec.title}</h3>
                 </div>
-                <span className="text-emerald-400 font-mono font-bold text-xs">{rec.estimatedPrice}</span>
+                <span className="text-cyan-300 pixel-heading font-bold text-xs">{rec.estimatedPrice}</span>
               </div>
 
-              <p className="text-slate-400 text-xs leading-relaxed mb-6 font-medium italic">"{rec.reason}"</p>
+              <p className="text-pink-400 text-xs pixel-heading leading-relaxed mb-6 italic">"{rec.reason}"</p>
 
               <button 
                 onClick={() => {
@@ -104,7 +104,7 @@ export default function RecommendationsView() {
                   } as any);
                   alert(`${rec.title} indexed.`);
                 }}
-                className="w-full py-2.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-white text-xs font-bold transition-all flex items-center justify-center gap-2 border border-slate-700"
+                className="w-full py-2.5 rounded-lg arcade-btn text-xs font-bold flex items-center justify-center gap-2"
               >
                 Index Target <ArrowRight size={14} />
               </button>
@@ -114,11 +114,11 @@ export default function RecommendationsView() {
       </div>
 
       {!loading && recommendations.length === 0 && (
-         <div className="py-20 flex flex-col items-center justify-center border border-dashed border-slate-800 rounded-2xl bg-slate-900/50">
-          <div className="w-16 h-16 rounded-full bg-slate-800 flex items-center justify-center mb-6">
-             <Sparkles className="text-slate-600" size={24} />
-          </div>
-          <h4 className="text-xs font-black text-slate-500 uppercase tracking-widest">Neural Engine Standby</h4>
+        <div className="py-20 flex flex-col items-center justify-center border-4 border-dashed border-cyan-400 rounded-lg bg-black/80 pixel-shadow">
+         <div className="w-16 h-16 rounded-full bg-pink-600 flex items-center justify-center mb-6 pixel-shadow">
+           <Sparkles className="text-white" size={24} />
+         </div>
+         <h4 className="text-xs pixel-heading font-black text-cyan-300 uppercase tracking-widest">Neural Engine Standby</h4>
         </div>
       )}
     </div>
