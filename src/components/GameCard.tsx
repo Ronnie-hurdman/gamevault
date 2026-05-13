@@ -73,42 +73,42 @@ export default function GameCard({ game, onUpdate, onRemove, variant = 'library'
       initial={{ opacity: 0, scale: 0.95 }}
       animate={{ opacity: 1, scale: 1 }}
       className={cn(
-        "group relative rounded-xl overflow-visible shadow-xl transition-colors",
+        "group relative rounded-lg overflow-visible pixel-shadow transition-colors glass-card border-4",
         variant === 'library' && game.isFavorite
-          ? "bg-slate-900 border border-rose-500/60 shadow-rose-950/40"
-          : "bg-slate-900 border border-slate-800"
+          ? "border-pink-500 bg-black/90"
+          : "border-cyan-400 bg-black/80"
       )}
     >
       {/* Game Image */}
-      <div className="h-32 bg-slate-800 relative overflow-hidden rounded-t-xl">
+      <div className="h-32 bg-black relative overflow-hidden rounded-t-lg border-b-4 border-cyan-400">
         {game.imageUrl ? (
           <img 
             src={game.imageUrl} 
             alt={game.title} 
-            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 pixel-shadow"
             onError={(e) => { e.currentTarget.src = 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&q=80&w=400'; }}
           />
         ) : (
-          <div className="w-full h-full flex flex-col items-center justify-center bg-slate-800/50">
-             {variant === 'wishlist' && <span className="text-slate-500 text-2xl font-bold tracking-tight mb-2">{game.price || '$59.99'}</span>}
-             <Gamepad2 className="text-slate-700" size={32} />
-          </div>
+           <div className="w-full h-full flex flex-col items-center justify-center bg-black/60">
+             {variant === 'wishlist' && <span className="text-pink-400 text-2xl pixel-heading font-bold tracking-tight mb-2">{game.price || '$59.99'}</span>}
+             <Gamepad2 className="text-cyan-400 pixel-shadow" size={32} />
+           </div>
         )}
         
         {/* Overlay Badges */}
         <div className="absolute top-2 right-2 flex items-center gap-2">
            {variant === 'library' && game.isFavorite && (
-             <div className="flex items-center gap-1 rounded-full border border-rose-400/40 bg-rose-500/20 px-2 py-1 backdrop-blur-sm">
-               <Heart size={10} className="fill-rose-400 text-rose-400" />
-               <span className="text-[8px] font-bold uppercase tracking-[0.24em] text-rose-100">Favorite</span>
+             <div className="flex items-center gap-1 rounded-full border-2 border-pink-500 bg-pink-600/30 px-2 py-1 pixel-shadow">
+               <Heart size={10} className="fill-pink-400 text-pink-400" />
+               <span className="text-[8px] pixel-heading font-bold uppercase tracking-[0.24em] text-white">Favorite</span>
              </div>
            )}
            {platformIcons[game.platform]}
         </div>
 
         {variant === 'library' && (
-          <div className="absolute bottom-2 left-2 px-2 py-0.5 rounded-md bg-black/40 backdrop-blur-md border border-white/5 opacity-0 group-hover:opacity-100 transition-opacity">
-             <span className="text-[8px] font-bold uppercase tracking-widest text-slate-300">Archive ID: {game.id?.slice(0,4)}</span>
+          <div className="absolute bottom-2 left-2 px-2 py-0.5 rounded bg-black/80 border-2 border-cyan-400 opacity-0 group-hover:opacity-100 transition-opacity pixel-shadow">
+             <span className="text-[8px] pixel-heading font-bold uppercase tracking-widest text-cyan-300">Archive ID: {game.id?.slice(0,4)}</span>
           </div>
         )}
       </div>
@@ -116,15 +116,15 @@ export default function GameCard({ game, onUpdate, onRemove, variant = 'library'
       {/* Content */}
       <div className="p-3 relative">
         <div className="flex items-start justify-between gap-2">
-          <h3 className="text-sm font-semibold truncate text-white">{game.title}</h3>
+          <h3 className="text-sm pixel-heading font-semibold truncate text-white drop-shadow-[0_0_8px_#00ffea]">{game.title}</h3>
           {variant === 'library' && (
             <button
               onClick={() => onUpdate?.({ isFavorite: !game.isFavorite })}
               className={cn(
-                "mt-0.5 shrink-0 rounded-full border p-1.5 transition-colors",
+                "mt-0.5 shrink-0 rounded-full border-2 p-1.5 transition-colors pixel-shadow",
                 game.isFavorite
-                  ? "border-rose-400/50 bg-rose-500/15 text-rose-300"
-                  : "border-slate-700 text-slate-500 hover:border-rose-400/40 hover:text-rose-300"
+                  ? "border-pink-500 bg-pink-600/30 text-white"
+                  : "border-cyan-400 text-cyan-300 hover:border-pink-500 hover:text-white"
               )}
               title={game.isFavorite ? 'Remove from favorites' : 'Add to favorites'}
               aria-label={game.isFavorite ? 'Remove from favorites' : 'Add to favorites'}
@@ -139,15 +139,15 @@ export default function GameCard({ game, onUpdate, onRemove, variant = 'library'
              <button 
                onClick={() => setShowStatusMenu(!showStatusMenu)}
                className={cn(
-                 "flex items-center gap-1 px-2 py-1 rounded transition-all cursor-pointer",
+                 "flex items-center gap-1 px-2 py-1 rounded transition-all cursor-pointer border-2 pixel-heading",
                  showStatusMenu 
-                   ? "bg-slate-800/60 border border-slate-700" 
-                   : "hover:bg-slate-800/40 border border-transparent",
+                   ? "bg-black border-pink-500 text-pink-400" 
+                   : "hover:bg-black/60 border-cyan-400 text-cyan-300",
                  statusColors[game.playedStatus]
                )}
                title="Click to change status"
              >
-               <span className="text-[10px] font-bold uppercase tracking-wide">
+               <span className="text-[10px] pixel-heading font-bold uppercase tracking-wide">
                  {game.playedStatus}
                </span>
                <ChevronDown 
@@ -160,7 +160,7 @@ export default function GameCard({ game, onUpdate, onRemove, variant = 'library'
              </button>
              <button
                onClick={() => setShowProgressModal(true)}
-               className="text-[10px] text-slate-400 hover:text-indigo-400 transition-colors flex items-center gap-1 px-2 py-1 rounded hover:bg-slate-800/40"
+               className="text-[10px] pixel-heading text-cyan-300 hover:text-pink-400 transition-colors flex items-center gap-1 px-2 py-1 rounded hover:bg-black/60 border-2 border-cyan-400"
                title="Edit progress"
              >
                <Clock size={12} />
@@ -174,17 +174,17 @@ export default function GameCard({ game, onUpdate, onRemove, variant = 'library'
                    initial={{ opacity: 0, scale: 0.95, y: -8 }}
                    animate={{ opacity: 1, scale: 1, y: 0 }}
                    exit={{ opacity: 0, scale: 0.95, y: -8 }}
-                   className="absolute left-0 top-full mt-2 bg-slate-800 border border-slate-700 rounded-lg shadow-2xl z-50 overflow-visible backdrop-blur-sm min-w-[140px]"
+                   className="absolute left-0 top-full mt-2 bg-black border-2 border-pink-500 rounded-lg pixel-shadow z-50 overflow-visible min-w-[140px]"
                  >
                    {statusOptions.map(status => (
                      <button
                        key={status}
                        onClick={() => handleStatusChange(status)}
                        className={cn(
-                         "w-full px-3 py-2 text-[10px] font-bold uppercase tracking-wide transition-colors flex items-center justify-between whitespace-nowrap",
+                         "w-full px-3 py-2 text-[10px] pixel-heading font-bold uppercase tracking-wide transition-colors flex items-center justify-between whitespace-nowrap border-b border-cyan-400 last:border-b-0",
                          game.playedStatus === status 
-                           ? `${statusColors[status]} bg-slate-700/60` 
-                           : `text-slate-400 hover:bg-slate-700/40 hover:${statusColors[status]}`
+                           ? `text-pink-400 bg-black/80` 
+                           : `text-cyan-300 hover:bg-pink-600/30 hover:text-white`
                        )}
                      >
                        <span>{status}</span>
@@ -203,13 +203,13 @@ export default function GameCard({ game, onUpdate, onRemove, variant = 'library'
                    initial={{ opacity: 0, scale: 0.95, y: -8 }}
                    animate={{ opacity: 1, scale: 1, y: 0 }}
                    exit={{ opacity: 0, scale: 0.95, y: -8 }}
-                   className="absolute right-0 top-full mt-2 bg-slate-800 border border-slate-700 rounded-lg shadow-2xl z-50 p-4 backdrop-blur-sm w-64"
+                   className="absolute right-0 top-full mt-2 bg-black border-2 border-cyan-400 rounded-lg pixel-shadow z-50 p-4 w-64"
                  >
                    <div className="flex items-center justify-between mb-3">
-                     <h4 className="text-[10px] font-bold uppercase tracking-widest text-white">Gameplay Progress</h4>
+                     <h4 className="text-[10px] pixel-heading font-bold uppercase tracking-widest text-cyan-300">Gameplay Progress</h4>
                      <button
                        onClick={() => setShowProgressModal(false)}
-                       className="text-slate-500 hover:text-white transition-colors"
+                       className="text-pink-400 hover:text-white transition-colors"
                      >
                        <X size={14} />
                      </button>
@@ -218,7 +218,7 @@ export default function GameCard({ game, onUpdate, onRemove, variant = 'library'
                    <div className="space-y-3">
                      {/* Completion Percentage */}
                      <div>
-                       <label className="block text-[9px] font-bold uppercase tracking-wide text-slate-300 mb-1">
+                       <label className="block text-[9px] pixel-heading font-bold uppercase tracking-wide text-cyan-300 mb-1">
                          Completion: {progressForm.completionPercentage}%
                        </label>
                        <input
@@ -227,13 +227,13 @@ export default function GameCard({ game, onUpdate, onRemove, variant = 'library'
                          max="100"
                          value={progressForm.completionPercentage}
                          onChange={(e) => setProgressForm({ ...progressForm, completionPercentage: Number(e.target.value) })}
-                         className="w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-indigo-500"
+                         className="w-full h-2 bg-pink-600 rounded-lg appearance-none cursor-pointer accent-cyan-400"
                        />
                      </div>
 
                      {/* Hours Played */}
                      <div>
-                       <label className="block text-[9px] font-bold uppercase tracking-wide text-slate-300 mb-1">
+                       <label className="block text-[9px] pixel-heading font-bold uppercase tracking-wide text-cyan-300 mb-1">
                          Hours Played
                        </label>
                        <input

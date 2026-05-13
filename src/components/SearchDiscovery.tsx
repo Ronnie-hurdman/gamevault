@@ -33,24 +33,24 @@ export default function SearchDiscovery() {
 
   return (
     <div className="space-y-10">
-      <header className="max-w-2xl border-b border-slate-800 pb-8">
-        <h2 className="text-3xl font-bold tracking-tight text-white leading-tight">Discovery Protocol</h2>
-        <p className="text-slate-500 mt-2 text-sm font-medium">Search across Steam, PlayStation, and Nintendo systems.</p>
+      <header className="max-w-2xl border-b-4 border-cyan-400 pb-8 pixel-shadow">
+        <h2 className="text-3xl pixel-heading text-white leading-tight drop-shadow-[0_0_8px_#00ffea]">Discovery Protocol</h2>
+        <p className="text-pink-400 mt-2 text-xs pixel-heading">Search across Steam, PlayStation, and Nintendo systems.</p>
       </header>
 
       <div className="max-w-xl">
         <form onSubmit={handleSearch} className="relative group">
-          <SearchIcon className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-indigo-400 transition-colors" size={18} />
+          <SearchIcon className="absolute left-4 top-1/2 -translate-y-1/2 text-cyan-300 group-focus-within:text-pink-400 transition-colors" size={18} />
           <input 
             type="text"
             placeholder="Search global stores..."
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            className="w-full bg-slate-900 border border-slate-800 rounded-lg py-3 pl-11 pr-32 text-sm text-slate-200 outline-none focus:ring-2 focus:ring-indigo-500/50 shadow-xl transition-all placeholder:text-slate-600"
+            className="w-full bg-black border-2 border-cyan-400 rounded-lg py-3 pl-11 pr-32 text-sm pixel-heading text-cyan-300 outline-none focus:ring-2 focus:ring-pink-500 shadow-xl transition-all placeholder:text-pink-400"
           />
           <button 
             type="submit"
-            className="absolute right-1.5 top-1.5 bottom-1.5 bg-indigo-600 hover:bg-indigo-500 text-white px-6 rounded-md text-xs font-bold transition-all"
+            className="absolute right-1.5 top-1.5 bottom-1.5 arcade-btn text-xs font-bold"
           >
             {isSearching ? <Loader2 className="animate-spin" size={16} /> : "Search"}
           </button>
@@ -78,9 +78,9 @@ export default function SearchDiscovery() {
       </div>
 
       {results.length === 0 && !isSearching && (
-        <div className="py-20 text-center border border-dashed border-slate-800 rounded-2xl bg-slate-900/50">
-          <Sparkles className="mx-auto mb-4 text-slate-800" size={48} />
-          <h3 className="text-sm font-bold text-slate-400 uppercase tracking-widest">No results in proximity</h3>
+        <div className="py-20 text-center border-4 border-dashed border-pink-500 rounded-lg bg-black/80 pixel-shadow">
+          <Sparkles className="mx-auto mb-4 text-pink-400" size={48} />
+          <h3 className="text-sm pixel-heading font-bold text-cyan-300 uppercase tracking-widest">No results in proximity</h3>
         </div>
       )}
     </div>
