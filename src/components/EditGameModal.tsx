@@ -1,7 +1,8 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
+import { createPortal } from 'react-dom';
 import { X, Save } from 'lucide-react';
-import { Game, Platform, PlayedStatus } from '../types';
+import { Game, Platform } from '../types';
 
 interface EditGameModalProps {
   game: Game;
@@ -13,40 +14,32 @@ interface EditGameModalProps {
 interface FormState {
   title: string;
   platform: Platform;
-  playedStatus: PlayedStatus;
-  isFavorite: boolean;
   price: string;
   rating: number;
   description: string;
   notes: string;
-  dateStarted: string;
-  dateFinished: string;
-  completionPercentage: number;
-  hoursPlayed: number;
 }
 
 const platforms: Platform[] = ['Sony', 'Nintendo', 'Steam'];
-const playedStatuses: PlayedStatus[] = ['Unplayed', 'Playing', 'Played'];
 
 function buildInitialState(game: Game): FormState {
   return {
     title: game.title || '',
     platform: game.platform,
-    playedStatus: game.playedStatus,
-    isFavorite: !!game.isFavorite,
     price: game.price || '',
     rating: game.rating || 0,
     description: game.description || '',
     notes: game.notes || '',
-    dateStarted: game.dateStarted || '',
-    dateFinished: game.dateFinished || '',
-    completionPercentage: game.completionPercentage || 0,
-    hoursPlayed: game.hoursPlayed || 0,
   };
 }
 
 export default function EditGameModal({ game, isOpen, onClose, onSave }: EditGameModalProps) {
   const [form, setForm] = useState<FormState>(() => buildInitialState(game));
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     if (isOpen) {
@@ -63,29 +56,25 @@ export default function EditGameModal({ game, isOpen, onClose, onSave }: EditGam
     onSave({
       title: form.title.trim(),
       platform: form.platform,
-      playedStatus: form.playedStatus,
-      isFavorite: form.isFavorite,
       price: form.price.trim(),
       rating: Math.max(0, Math.min(5, Number(form.rating) || 0)),
       description: form.description.trim(),
       notes: form.notes.trim(),
-      dateStarted: form.dateStarted || undefined,
-      dateFinished: form.dateFinished || undefined,
-      completionPercentage: Math.max(0, Math.min(100, Number(form.completionPercentage) || 0)),
-      hoursPlayed: Math.max(0, Number(form.hoursPlayed) || 0),
     });
 
     onClose();
   };
 
-  return (
+  if (!mounted) return null;
+
+  return createPortal(
     <AnimatePresence>
       {isOpen && (
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 z-[70] bg-black/80 backdrop-blur-sm flex items-center justify-center p-4"
+          className="fixed inset-0 z-[90] bg-black/80 backdrop-blur-sm flex items-center justify-center p-4"
           onClick={onClose}
         >
           <motion.div
@@ -93,7 +82,7 @@ export default function EditGameModal({ game, isOpen, onClose, onSave }: EditGam
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 16, scale: 0.98 }}
             transition={{ duration: 0.16 }}
-            className="w-full max-w-2xl rounded-lg bg-black border-4 border-cyan-400 pixel-shadow"
+            className="w-[min(94vw,52rem)] max-h-[88vh] overflow-hidden rounded-lg bg-black border-4 border-cyan-400 pixel-shadow"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between border-b-4 border-pink-500 px-5 py-4">
@@ -108,7 +97,7 @@ export default function EditGameModal({ game, isOpen, onClose, onSave }: EditGam
               </button>
             </div>
 
-            <form onSubmit={submit} className="p-5 space-y-4">
+            <form onSubmit={submit} className="max-h-[calc(88vh-5.5rem)] overflow-y-auto p-5 space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 <label className="space-y-1.5">
                   <span className="text-[10px] pixel-heading text-pink-400">Title</span>
@@ -137,21 +126,6 @@ export default function EditGameModal({ game, isOpen, onClose, onSave }: EditGam
                 </label>
 
                 <label className="space-y-1.5">
-                  <span className="text-[10px] pixel-heading text-pink-400">Played Status</span>
-                  <select
-                    value={form.playedStatus}
-                    onChange={(e) => setForm((prev) => ({ ...prev, playedStatus: e.target.value as PlayedStatus }))}
-                    className="w-full rounded-md border-2 border-cyan-400 bg-black px-3 py-2 text-xs text-cyan-300 outline-none focus:border-pink-500"
-                  >
-                    {playedStatuses.map((status) => (
-                      <option key={status} value={status}>
-                        {status}
-                      </option>
-                    ))}
-                  </select>
-                </label>
-
-                <label className="space-y-1.5">
                   <span className="text-[10px] pixel-heading text-pink-400">Price</span>
                   <input
                     type="text"
@@ -174,62 +148,7 @@ export default function EditGameModal({ game, isOpen, onClose, onSave }: EditGam
                     className="w-full rounded-md border-2 border-cyan-400 bg-black px-3 py-2 text-xs text-cyan-300 outline-none focus:border-pink-500"
                   />
                 </label>
-
-                <label className="space-y-1.5">
-                  <span className="text-[10px] pixel-heading text-pink-400">Hours Played</span>
-                  <input
-                    type="number"
-                    min={0}
-                    step={1}
-                    value={form.hoursPlayed}
-                    onChange={(e) => setForm((prev) => ({ ...prev, hoursPlayed: Number(e.target.value) }))}
-                    className="w-full rounded-md border-2 border-cyan-400 bg-black px-3 py-2 text-xs text-cyan-300 outline-none focus:border-pink-500"
-                  />
-                </label>
-
-                <label className="space-y-1.5">
-                  <span className="text-[10px] pixel-heading text-pink-400">Completion %</span>
-                  <input
-                    type="number"
-                    min={0}
-                    max={100}
-                    step={1}
-                    value={form.completionPercentage}
-                    onChange={(e) => setForm((prev) => ({ ...prev, completionPercentage: Number(e.target.value) }))}
-                    className="w-full rounded-md border-2 border-cyan-400 bg-black px-3 py-2 text-xs text-cyan-300 outline-none focus:border-pink-500"
-                  />
-                </label>
-
-                <label className="space-y-1.5">
-                  <span className="text-[10px] pixel-heading text-pink-400">Date Started</span>
-                  <input
-                    type="date"
-                    value={form.dateStarted}
-                    onChange={(e) => setForm((prev) => ({ ...prev, dateStarted: e.target.value }))}
-                    className="w-full rounded-md border-2 border-cyan-400 bg-black px-3 py-2 text-xs text-cyan-300 outline-none focus:border-pink-500"
-                  />
-                </label>
-
-                <label className="space-y-1.5">
-                  <span className="text-[10px] pixel-heading text-pink-400">Date Finished</span>
-                  <input
-                    type="date"
-                    value={form.dateFinished}
-                    onChange={(e) => setForm((prev) => ({ ...prev, dateFinished: e.target.value }))}
-                    className="w-full rounded-md border-2 border-cyan-400 bg-black px-3 py-2 text-xs text-cyan-300 outline-none focus:border-pink-500"
-                  />
-                </label>
               </div>
-
-              <label className="flex items-center gap-2 rounded-md border-2 border-cyan-400 bg-black/70 px-3 py-2">
-                <input
-                  type="checkbox"
-                  checked={form.isFavorite}
-                  onChange={(e) => setForm((prev) => ({ ...prev, isFavorite: e.target.checked }))}
-                  className="h-4 w-4 accent-pink-500"
-                />
-                <span className="text-[10px] pixel-heading text-cyan-300">Favorite</span>
-              </label>
 
               <label className="space-y-1.5 block">
                 <span className="text-[10px] pixel-heading text-pink-400">Description</span>
@@ -273,5 +192,5 @@ export default function EditGameModal({ game, isOpen, onClose, onSave }: EditGam
         </motion.div>
       )}
     </AnimatePresence>
-  );
+  , document.body);
 }
