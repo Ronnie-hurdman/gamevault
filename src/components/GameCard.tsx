@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { Star, Trash2, Gamepad2, Check, ChevronDown, Heart, Clock, BarChart3, X, Pencil } from 'lucide-react';
 import { Game, PlayedStatus } from '../types';
 import { cn } from '../lib/utils';
-import EditGameModal from './EditGameModal';
+import EditGameModal from './EditGameModal.tsx';
 
 interface GameCardProps {
   game: Game;
@@ -361,7 +361,7 @@ export default function GameCard({ game, onUpdate, onRemove, variant = 'library'
           game={game}
           isOpen={showEditModal}
           onClose={() => setShowEditModal(false)}
-          onSave={(updates) => onUpdate?.(updates)}
+          onSave={(updates: Partial<Game>) => onUpdate?.(updates)}
         />
       )}
     </motion.div>
