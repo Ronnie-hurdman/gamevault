@@ -74,6 +74,7 @@ export default function GameCard({ game, onUpdate, onRemove, variant = 'library'
       animate={{ opacity: 1, scale: 1 }}
       className={cn(
         "group relative rounded-lg overflow-visible pixel-shadow transition-colors glass-card border-4",
+        (showProgressModal || showStatusMenu || showEditModal) ? "z-[70]" : "z-10",
         variant === 'library' && game.isFavorite
           ? "border-pink-500 bg-black/90"
           : "border-cyan-400 bg-black/80"
@@ -203,7 +204,7 @@ export default function GameCard({ game, onUpdate, onRemove, variant = 'library'
                    initial={{ opacity: 0, scale: 0.95, y: -8 }}
                    animate={{ opacity: 1, scale: 1, y: 0 }}
                    exit={{ opacity: 0, scale: 0.95, y: -8 }}
-                   className="absolute right-0 top-full mt-2 bg-black border-2 border-cyan-400 rounded-lg pixel-shadow z-50 p-4 w-64"
+                   className="absolute right-0 top-full mt-2 bg-black border-2 border-cyan-400 rounded-lg pixel-shadow z-[80] p-4 w-64"
                  >
                    <div className="flex items-center justify-between mb-3">
                      <h4 className="text-[10px] pixel-heading font-bold uppercase tracking-widest text-cyan-300">Gameplay Progress</h4>
