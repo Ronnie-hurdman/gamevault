@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Star, Trash2, Gamepad2, Check, ChevronDown, Heart, Clock, BarChart3, X, Pencil } from 'lucide-react';
+import { Trash2, Gamepad2, Check, ChevronDown, Heart, Clock, BarChart3, X, Pencil } from 'lucide-react';
 import { Game, PlayedStatus } from '../types';
 import { cn } from '../lib/utils';
 import EditGameModal from './EditGameModal.tsx';
@@ -49,6 +49,10 @@ export default function GameCard({ game, onUpdate, onRemove, variant = 'library'
     onUpdate?.(progressForm);
     setShowProgressModal(false);
   };
+
+  const ratingValue = Math.max(0, Math.min(5, Number(game.rating) || 0));
+  const roundedRating = Math.round(ratingValue);
+  const ratingStars = `${'★'.repeat(roundedRating)}${'☆'.repeat(5 - roundedRating)}`;
 
   // Close menu when clicking outside
   useEffect(() => {
@@ -333,15 +337,14 @@ export default function GameCard({ game, onUpdate, onRemove, variant = 'library'
         {/* Ratings */}
         <div className="mt-3 flex items-center justify-between">
           <div className="flex items-center gap-1">
-            <span className="text-yellow-500 text-xs">★★★★☆</span>
-            <span className="text-[10px] text-slate-500">({Math.floor(Math.random() * 1000)})</span>
+            <span className="text-yellow-500 text-xs">{ratingStars}</span>
+            <span className="text-[10px] text-slate-500">({ratingValue.toFixed(1)}/5)</span>
           </div>
           
           <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
              {variant === 'library' ? (
                 <>
                   <button onClick={() => setShowEditModal(true)} className="p-1 text-slate-500 hover:text-indigo-400 transition-colors" title="Edit game details"><Pencil size={12} /></button>
-                  <button onClick={() => onUpdate?.({ rating: ((game.rating || 0) % 5) + 1 })} className="p-1 text-slate-500 hover:text-white transition-colors"><Star size={12} /></button>
                   <button onClick={onRemove} className="p-1 text-slate-500 hover:text-rose-400 transition-colors"><Trash2 size={12} /></button>
                 </>
              ) : variant === 'wishlist' ? (
